@@ -1,17 +1,27 @@
 # Sound Event Detection using CNNs - Project Report #
 
 ## Table of contents ##
-[Introduction](introduction)
-[Data source and labels](data-source-and-labels)
-[Converting Audio to Images](converting-audio-to-images)
-[Architectures Tested](architectures-tested)
-[Datasets](datasets)
-[Metrics Used for Evaluation](metrics-used-for-evaluation)
-[Results](results)
-[Polyphonic Sound Event Detection](polyphonic-sound-event-detection)
-[Future work](future-work)
-[References](references)
-[Code details](code-details)
+![Introduction](introduction)
+
+![Data source and labels](data-source-and-labels)
+
+![Converting Audio to Images](converting-audio-to-images)
+
+![Architectures Tested](architectures-tested)
+
+![Datasets](datasets)
+
+![Metrics Used for Evaluation](metrics-used-for-evaluation)
+
+![Results](results)
+
+![Polyphonic Sound Event Detection](polyphonic-sound-event-detection)
+
+![Future work](future-work)
+
+![References](references)
+
+![Code details](code-details)
 
 ## Introduction ##
 
@@ -252,12 +262,16 @@ Hamming loss | 0.07021574440052701
 
 <img src="images/poly_train_loss.png" alt="" width="500"/> <img src="images/poly_test_loss.png" alt="" width="500"/>
 *Left: train loss, Right: test loss*
+
 <img src="images/poly_train_hamming.png" alt="" width="500"/> <img src="images/poly_test_hamming.png" alt="" width="500"/> 
 *Left: train hamming loss, Right: test hamming loss*
+
 <img src="images/poly_train_recall.png" alt="" width="500"/> <img src="images/poly_test_recall.png" alt="" width="500"/> 
 *Left: train recall, Right: test recall*
+
 <img src="images/poly_train_prec.png" alt="" width="500"/> <img src="images/poly_test_prec.png" alt="" width="500"/>
 *Left: train precision, Right: test precision*
+
 
 # Future Work #
 I believe there is a lot more things left to try:
@@ -286,6 +300,7 @@ International Conference on Acoustics, Speech and Signal Processing (ICASSP), IE
 # Code details #
 
 FSD Kaggle 2018 Dataset can be downloaded here: https://www.kaggle.com/c/freesound-audio-tagging/data
+
 TUT-SED Polyphonic Dataset can be downloaded here: https://webpages.tuni.fi/arg/paper/taslp2017-crnn-sed/tut-sed-synthetic-2016 
 Note: you need to email owner to get username/password for access.
 
@@ -294,9 +309,13 @@ All code to preprocess .wav files and generate mel spectograms can be found in f
 The generated mel spec datasets can be found at the following links. Amplified, Verfied, Complete and Polyphonic contain test sets as well.
 
 Amplified: https://drive.google.com/file/d/1qaaHo06u6gxlwFXjp76o4aM9IuCt8o-3/view?usp=sharing
+
 Verified: https://drive.google.com/file/d/1mt90E8Mlsrsir71dm2nuPi16yNRxwAKK/view?usp=sharing
+
 Complete: https://drive.google.com/file/d/1gtwPp-geHIRJBI8m31zkGFF4vE7bQ4Ni/view?usp=sharing
+
 Test padded: https://drive.google.com/file/d/1reWj12wXaNHBhDhsQy9o3zlVvIk50fTP/view?usp=sharing
+
 Polyphonic: https://drive.google.com/file/d/1v6CveXuAsSPGssJXR4rm4-bpMl5PnRIG/view?usp=sharing
 
 The tar datasets have to be uploaded to your google drive to use the given Colab notebooks. ![Project.ipynb](Project.ipynb) is for single sound event detetction and ![Polyphonic.ipynb](Polyphonic.ipynb) for polyphonic sound event detection. 
