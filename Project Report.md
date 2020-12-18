@@ -1,6 +1,6 @@
-#Project Report#
+# Project Report #
 
-##Introduction##
+## Introduction ##
 
 Sound event detection is the task of identifying sounds from a given audio stream along with their temporal start and end times. However, sounds do not occur in isolation which makes it difficult to get isolated samples that generalize well for training. Additionally manually annotating a given audio stream is a time consuming task and often error prone -- resulting in very few datasets of isolated samples or strongly annotated samples. In this project, we work first work on classifying sounds into 1 of 41 labels and then on n of 16 labels i.e. polyphonic sound event detection.
 
@@ -8,7 +8,7 @@ Some other approaches to SED include gaussian mixture models, support vector mac
 
 I chose this task as someone who has difficulty hearing -- a sound event detection technology would take a lot of anxiety out of everyday life. We live in a noisy world, sounds a lot of information we do not think twice about -- alarms, knocking, sirens, honking, microwave beeps, tea kettle whistles and the list goes on. Many of these ahve no visual cues to go with them and thus difficult to notice and identify. Additionally, devices do exist for specific cases (vibrating alarm clocks, flashing doorbell) but it is impractical to have a device for every sound. We are not always in control of our environment so a single technology that can handle many diverse sounds would have much value. This project was also inspired by Sound Watch which in turn used the approach described in Ubicoustics.   
 
-##Data samples##
+## Data samples ##
 To deal with difficulty in recording isolated samples and weakly labelled data, Laput et al curated a training set
 on selected sounds from sound effect libraries. The advantages of sound effect libraries are that all available sound effects are atomic i.e. tightly segmented and hundreds of variations of each sound exist, creating a diverse set. Unfortunately, due to licensing agreements existing with the sound effect libraries and the institution (CMU), I wasn't able to get access to this curated dataset. The timeline of this project made it impractical to curate my own dataset from sound effect libraries. Instead, I used the FSDKaggle2018 dataset, consisting of samples from Freesound from DCASE 2018 (link). The challenge for this dataset was "general purpose audio tagging" so each .wav file (3-30 sec in length) in the dataset has been annotated with a single label. The 41 labels are from google's AudioSet Ontology, listed below:
 
@@ -54,7 +54,7 @@ Cowbell
 Bark
 Meow 
 
-##Converting Audio to Images##
+## Converting Audio to Images ##
 Often times we see plots of sounds, with time as the x axis and pressure as the y axis. Other representations of sound exist, like the fourier transform that takes a signal in the time domain as input and outputs its decomposition into frequencies. Human's ability to hear is focused on small range of frequencies and amplitudes. Converting the frequency to log scale and amplitude to decibels, gives us a spectogram. However, humans ability to hear is not linear --  pairs of sounds that are equidistant to each other on the Hz scale (500 and 1000 Hz vs 7500 and 8000 Hz) do not sound equidistant to humans. So there exists a Mel Scale that is a non-linear transform of the frequency scale. Using this, we create mel spectograms, pictured below. The code for generation of mel spectograms is available through google's audioset VGGish, and has been adapted from there.
 
 ![alt text](images/mel_spectogram.png) 
@@ -63,16 +63,16 @@ Algorithm for preprocessing -->
 Ensure all wav files are uniform i.e. monochannel, 16-bit depth, same sample rate (16 Hz in Ubicoustics, but 44.1 Hz here). pydub library has several functions that helped with this.
 Then audio is segmented into 960 ms blocks. On each block, Short Time Fourier Transform is computed with 25ms window, 10 ms hop. Mel Fourier Coefficients are calculated by placing into 64 mel bins, and log scaled mel spectogram of 96x64 is generated for each 960 ms of audio. Visualization of the generated spectograms are shown below:
 
-![alt text](images/melspec0.png) ![alt text](images/melspec2.png) ![alt text](images/melspec4.png) 
+![alt text](images/melspec0.png) ![alt text](images/melspec2.png) ![alt text](images/melspec4.png) ![alt text](images/melspec6.png) 
 
 Each input feature is actually a numpy array. Notice it is single channel (no color). Sets of 500 are stacked together for ease of access and stored in .npy files and uploaded to google drive.
 
-##Architectures tested: ##
+## Architectures tested: ##
 Most pretrainined nets expect 224x224, so in regards to smaller input, we remove last block of convolution. The benefit of transfer learning is being able to use networks pretrained on imagenet.
 Vgg11 with 4 blocks instead of 5 (from ubicoustics) insert table
 resnet18 (with last block removed, as suggested in ubicoustics) insert image
 
-##Data##
+## Data ##
 As mentioned earlier, data was sourced from freesound challenge. The training set consisted of a mix of manually verified and unverified examples. The test set also contained sounds that did not belong to any of the given classes. The challeneg included a csv file listing which files had been manually verified or which files did not belong to any of the given classes. This was used to create 4 dataset combinations were created
 
 dataset breakdown: 
