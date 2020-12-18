@@ -1,27 +1,27 @@
 # Sound Event Detection using CNNs - Project Report #
 
 ## Table of contents ##
-![Introduction](introduction)
+[Introduction](#introduction)
 
-![Data source and labels](data-source-and-labels)
+[Data source and labels](#data-source-and-labels)
 
-![Converting Audio to Images](converting-audio-to-images)
+[Converting Audio to Images](#converting-audio-to-images)
 
-![Architectures Tested](architectures-tested)
+[Architectures Tested](#architectures-tested)
 
-![Datasets](datasets)
+[Datasets](#datasets)
 
-![Metrics Used for Evaluation](metrics-used-for-evaluation)
+[Metrics Used for Evaluation](#metrics-used-for-evaluation)
 
-![Results](results)
+[Results](#results)
 
-![Polyphonic Sound Event Detection](polyphonic-sound-event-detection)
+[Polyphonic Sound Event Detection](#polyphonic-sound-event-detection)
 
-![Future work](future-work)
+[Future work](#future-work)
 
-![References](references)
+[References](#references)
 
-![Code details](code-details)
+[Code details](#code-details)
 
 ## Introduction ##
 
@@ -30,9 +30,9 @@ Sound event detection(SED) is the task of identifying sounds from a given audio 
 ![When processed through audio tagging system, each input file is tagged with a single label eg: laughter](images/aud_tagging.png)
 *Source: DCASE 2018 Challenge Website*
 
-Some other approaches to SED include Gaussian Mixture Models, Support Vector Machines and hierchical models. Hidden Markov Models are used to detect sounds in the audio stream as well. The deep learning approaches to SED also vary significantly from Recurrent Neural Networks (RNNs) to classify raw audio stream to Convolutional Neural Networks to classify spectograms. For this project, I am following the approach described in the paper [Ubicoustics: Plug and Play system](references) paper.
+Some other approaches to SED include Gaussian Mixture Models, Support Vector Machines and hierchical models. Hidden Markov Models are used to detect sounds in the audio stream as well. The deep learning approaches to SED also vary significantly from Recurrent Neural Networks (RNNs) to classify raw audio stream to Convolutional Neural Networks to classify spectograms. For this project, I am following the approach described in the paper [Ubicoustics: Plug and Play system](#references) paper.
 
-I chose this task as someone who has difficulty hearing -- a sound event detection technology would take a lot of anxiety out of everyday life. We live in a noisy world, sounds convey a lot of information we do not think twice about: alarms, knocking, sirens, honking, microwave beeps, tea kettle whistles and the list goes on. Many of these sounds have no visual cues to accompany them and are thus difficult to notice and identify. Additionally, devices do exist for specific cases (eg:vibrating alarm clocks, flashing doorbell) but it is impractical to have a device for every sound. We are not always in control of our environment so a single technology that can handle many diverse sounds would have much value. This project was also inspired by [Home Sound](references) paper which implements such a SED technology. 
+I chose this task as someone who has difficulty hearing -- a sound event detection technology would take a lot of anxiety out of everyday life. We live in a noisy world, sounds convey a lot of information we do not think twice about: alarms, knocking, sirens, honking, microwave beeps, tea kettle whistles and the list goes on. Many of these sounds have no visual cues to accompany them and are thus difficult to notice and identify. Additionally, devices do exist for specific cases (eg:vibrating alarm clocks, flashing doorbell) but it is impractical to have a device for every sound. We are not always in control of our environment so a single technology that can handle many diverse sounds would have much value. This project was also inspired by [Home Sound](#references) paper which implements such a SED technology. 
 
 ## Data source and Labels ##
 To resolve difficulty in recording isolated samples and avoid using weakly labelled data, Laput et al curated a training set
@@ -223,18 +223,18 @@ Did VGG or ResNet perform better? It's hard to say, both achieved similar accura
 
 The original paper has a section on real world deployment -- the sounds in the real world are not constrained to these 41 classes. There are a lot unknown sounds, even for humans. Any device that is useful in the real world context has to be able to say when the sound does not belong to any of the given classes. To test this real world functionality, I padded the test set with 20% of unknown sounds i.e. sounds that do not belong to the given categories. I evaluated both the best performing vgg and resnet models on this dataset. 
 
-A threshold was selected for the softmax output of the model, classifications that fell below this 'confidence threshold' were categorized as 'None'. The resulting accuracy for both models was significantly lower -- approximately 60%. Please check ![google colab notebook output](Project.ipynb) for details. In the ubicoustics paper, they had a drop in accuracy (from 70% to 65%) but it wasn't this large. Modifying values of the confidence threshold did not help improve accuracy much.
+A threshold was selected for the softmax output of the model, classifications that fell below this 'confidence threshold' were categorized as 'None'. The resulting accuracy for both models was significantly lower -- approximately 60%. Please check [google colab notebook output](Project.ipynb) for details. In the ubicoustics paper, they had a drop in accuracy (from 70% to 65%) but it wasn't this large. Modifying values of the confidence threshold did not help improve accuracy much.
 
-Apotential explanation for this is tht for most deep learning models, there is a gap between the output from the softmax layer and the true probabilies/confidence for each label. Models tend to be overconfident with their prediction. Resolving this gap between predicted probabilities and true confidence values is called calibration. One way to correctly calibrate a model is temperature scaling. Temperature is a hyperparameter that can be learned but I chose to manually try different values. However accuracy remained at 60%. (see ![google colab](Project.ipynb) for output)
+Apotential explanation for this is tht for most deep learning models, there is a gap between the output from the softmax layer and the true probabilies/confidence for each label. Models tend to be overconfident with their prediction. Resolving this gap between predicted probabilities and true confidence values is called calibration. One way to correctly calibrate a model is temperature scaling. Temperature is a hyperparameter that can be learned but I chose to manually try different values. However accuracy remained at 60%. (see [ google colab](Project.ipynb) for output)
 
 # Polyphonic sound event detection #
 As mentioned earlier, the real world does not contain sounds in isolation. Many different sounds occur simultaneously, resulting in this task called polyphonic sound event detection. The original paper did not evaluate their method on polyphonic SED, so I wanted to explore how it performed with a multilabel classification problem instead.
 
 The dataset used for this section is from [TUT-SED](https://webpages.tuni.fi/arg/paper/taslp2017-crnn-sed/tut-sed-synthetic-2016 "TUT-SED"). It contains sounds from 16 classes that are mixed together synthetically to create polyphony. The result of a synthetic mixture is very accurate annotations. 
 
-The same [preprocessing](converting-audio-to-images) was applied to the audio files to generate mel spectograms, but now it is multilabel classification problem so each sample has multiple labels.
+The same [preprocessing](#converting-audio-to-images) was applied to the audio files to generate mel spectograms, but now it is multilabel classification problem so each sample has multiple labels.
 
-Architecture tested: same vgg11 model described [above](architectures-tested) but with 16 output nodes. 
+Architecture tested: same vgg11 model described [above](#architectures-tested) but with 16 output nodes. 
 
 The labels were multihot encoded and sigmoid was used as final layer. Instead of using cross entropy loss which has softmax, binary cross entropy loss which has sigmoid was used.
 
@@ -244,7 +244,7 @@ For multilable classification, accuracy doesn't make much sense because each pre
 Hamming Loss = number of incorrectly classified samples / (number of samples x number of labels)
 
 Results:
-The model definitely achieved better than chance performance on both training and test set. Please see ![Polyphonic.ipynb](Polyphonic.ipynb) for detailed outputs. I believe this technique does generalize to polyphonic detection, but further testing is required to see which architectures work best and which metrics best evaluate real-world performance. 
+The model definitely achieved better than chance performance on both training and test set. Please see [Polyphonic.ipynb](Polyphonic.ipynb) for detailed outputs. I believe this technique does generalize to polyphonic detection, but further testing is required to see which architectures work best and which metrics best evaluate real-world performance. 
 
 Metrics                 | Train set performance 
 ------------------------|-----------------------
@@ -304,7 +304,7 @@ FSD Kaggle 2018 Dataset can be downloaded here: https://www.kaggle.com/c/freesou
 TUT-SED Polyphonic Dataset can be downloaded here: https://webpages.tuni.fi/arg/paper/taslp2017-crnn-sed/tut-sed-synthetic-2016 
 Note: you need to email owner to get username/password for access.
 
-All code to preprocess .wav files and generate mel spectograms can be found in folder ![preprocessing](preprocessing). Directory and file names have to be modified accordingly before use.
+All code to preprocess .wav files and generate mel spectograms can be found in folder [preprocessing](preprocessing). Directory and file names have to be modified accordingly before use.
 
 The generated mel spec datasets can be found at the following links. Amplified, Verfied, Complete and Polyphonic contain test sets as well.
 
@@ -318,7 +318,7 @@ Test padded: https://drive.google.com/file/d/1reWj12wXaNHBhDhsQy9o3zlVvIk50fTP/v
 
 Polyphonic: https://drive.google.com/file/d/1v6CveXuAsSPGssJXR4rm4-bpMl5PnRIG/view?usp=sharing
 
-The tar datasets have to be uploaded to your google drive to use the given Colab notebooks. ![Project.ipynb](Project.ipynb) is for single sound event detetction and ![Polyphonic.ipynb](Polyphonic.ipynb) for polyphonic sound event detection. 
+The tar datasets have to be uploaded to your google drive to use the given Colab notebooks. [Project.ipynb](Project.ipynb) is for single sound event detetction and [Polyphonic.ipynb](Polyphonic.ipynb) for polyphonic sound event detection. 
 
 All figures can be found under images. Full metrics from each run are in [Full Metrics.xlsx](Full%20Metrics.xlsx). The first sheet of the excel workbook lists the hyperparameters, models and dataset used for each run and corresponding serial number. 
 
