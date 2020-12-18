@@ -187,7 +187,7 @@ Macro average | 0.987614634146342 | 0.680868292682927 | 0.700036585365854 | 0.67
 Macro-STDEV   | 0.006696400562078 | 0.211252057314272 | 0.187112902756728 | 0.178823261227664
 
 
-![alt text](images/VGG_trainloss.png) 
+![alt text](images/VGG_trainloss.png =100x60) 
 ![alt text](images/ResNet_trainloss.png) 
 
 Did VGG or ResNet perform better? It's hard to say, both achieved similar accuracies on the train set. I believe if we had a balanced dataset for training and testing, we might be able to make better judgements about each model's performance.
@@ -201,23 +201,31 @@ this gap in calibrartion is problem with deep learning. a solution is temperatur
 temp is a hyperparameter that can be learned. played around with different values from 0.3 - 1, again did not help much
 
 # PART 2: polyphonic sound event detection #
-as mentioned earlier, realworld does not contain sounds in isolation. and thus there is another section of sound event detection called 'polyphonic'. wanted to evaluate this method on such dataset.
+As mentioned earlier, real world does not contain sounds in isolation. Many different sounds occur simultaneously, resulting in this task called polyphonic sound event detection. The original paper did not try this method on polyphonic SED, so I wanted to explore how it performed with a multilabel classification problem instead.
 
-dataset --> TUT-SED also DCASE. Contains 16 classes that are mixed together synthetically resulting in accurate annotations. need password to get dataset.
+The dataset used for this part is from TUT-SED. It contains sounds from 16 classes that are mixed together synthetically to create polyphony. The result of a synthetic mixture is very accurate annotations. need password to get dataset.
 
-datapreprocessing -- same with mel spec generation but now a multilabel classification problem so each sample had multiple labels.
+The same preprocessing was applied to the audio files to generate mel spectograms, but now it is multilabel classification problem so each sample has multiple labels.
 
-architectures tested: vgg11 with 16 output nodes
-the labels were multihot encoded
-use sigmoid as final layer
-instea dof cross entropy whihc has softmax, use binary cross entropy which has sigmoid
+Architecture tested: same vgg11 model described above but with 16 output nodes
+The labels were multihot encoded and sigmoid was used as final layer. Instead of cross entropy loss which has softmax, binary cross entropy loss which has sigmoid was used.
 
-evaluation metrics: for multilable classification, accuracy doesn't make much sense because
-each prediction can be partially correct. using a threshold, on the sigmoid output calculate
-example based preciison and recall
+Evaluation Metrics: 
+For multilable classification, accuracy doesn't make much sense because each prediction can be partially correct. Using a threshold on the sigmoid output from the model to classify as positive. Then example based preciison and recall and hamming loss were calculated.
 
-😥include precision recall curve for all the thresholds, train loss graph, test loss graph
-hamming loss?
+Metrics                 | Train set performance 
+------------------------|-----------------------
+Example based precision | 0.9895581061983265
+Example based recall    | 0.936937642413338
+Average loss | 0.04090054983378581
+Hamming loss | 0.011905640874187832
+ 
+Metric 					| Test set performance 
+------------------------|-----------------------
+Example based precision | 0.7784662787323723
+Example based recall | 0.717024448696244
+Average loss | 0.22571873990143987
+Hamming loss | 0.07021574440052701
 
 # future work section: #
 curate sound effects dataset for all sounds important to DHH community
