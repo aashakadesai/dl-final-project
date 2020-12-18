@@ -4,7 +4,7 @@
 
 Sound event detection is the task of identifying sounds from a given audio stream along with their temporal start and end times. However, sounds do not occur in isolation which makes it difficult to get isolated samples that generalize well for training. Additionally manually annotating a given audio stream is a time consuming task and often error prone -- resulting in very few datasets of isolated samples or strongly annotated samples. In this project, we first work on classifying sounds into 1 of 41 labels and then on n of 16 labels i.e. polyphonic sound event detection.
 
-                                    ![alt text](images/aud_tagging.png)
+![alt text](images/aud_tagging.png)
 
 Some other approaches to SED include gaussian mixture models, support vector machines and hierchical models. Hidden markov models are used to detect sounds in the audio stream as well. The deep learning approaches to SED also vary significantly from Recurrent Neural Networks (RNNs) on raw audio stream to Convolutional Neural Networks on spectograms. For this project, I'm following the approach described in the paper Ubicoustics: Plug and Play system paper.
 
@@ -112,7 +112,7 @@ Writing | 2882 | 2882 | 458 | 237 | 237
 ## Metrics used for Evaluation ##
 
 Due to the imbalanced nature of this dataset, accuracy was not the best metric to evaluate performance.
- 
+
 Accuracy = (TP + TN)/(TP + FP + TN + FN)
 Because of the large number of true negatives for each class, the class accuracy does not tell us much.
 
@@ -200,11 +200,12 @@ One way to correctly calibrate a model is temperature scaling. Temp is a hyperpa
 # Polyphonic sound event detection #
 As mentioned earlier, real world does not contain sounds in isolation. Many different sounds occur simultaneously, resulting in this task called polyphonic sound event detection. The original paper did not try this method on polyphonic SED, so I wanted to explore how it performed with a multilabel classification problem instead.
 
-The dataset used for this part is from [TUT-SED](https://webpages.tuni.fi/arg/paper/taslp2017-crnn-sed/tut-sed-synthetic-2016 "TUT-SED"). It contains sounds from 16 classes that are mixed together synthetically to create polyphony. The result of a synthetic mixture is very accurate annotations. need password to get dataset.
+The dataset used for this part is from [TUT-SED](https://webpages.tuni.fi/arg/paper/taslp2017-crnn-sed/tut-sed-synthetic-2016 "TUT-SED"). It contains sounds from 16 classes that are mixed together synthetically to create polyphony. The result of a synthetic mixture is very accurate annotations. 
 
 The same preprocessing was applied to the audio files to generate mel spectograms, but now it is multilabel classification problem so each sample has multiple labels.
 
-Architecture tested: same vgg11 model described above but with 16 output nodes
+Architecture tested: same vgg11 model described above but with 16 output nodes. 
+
 The labels were multihot encoded and sigmoid was used as final layer. Instead of cross entropy loss which has softmax, binary cross entropy loss which has sigmoid was used.
 
 Evaluation Metrics: 
