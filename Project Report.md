@@ -177,27 +177,28 @@ Macro average | 0.987768292682927 | 0.679790243902439 | 0.721553658536585 | 0.68
 Macro-STDEV   | 0.005961394091334 | 0.185862725963113 | 0.166770694514295 | 0.15348852594758
 
  a theory for this is that in mel spectograms, typically amplitude is the color scale. vgg-ish audio input features are 96x64, no channels for color. however ubicoustics used same code. so not sure where we went wrong?
- 
-then moved onto resnet architecture, with (3)
-learned much faster, overfit on train set
-insert training loss, test loss, train accuracy graph
-per class accuracy, precision, recall
 
-playing around with weight decay did not help overfitting much
-did resnet perform better? can't say -- dataset limitation
+Then I moved onto testing ResNet architecture, with the Complete dataset. (See full metrics 7.11). It achieved similar accuary on test set 75%, (VGG achieved 75% as well), resnet was much quicker to overfit on the train set. It reached 99% accuracy by the 17th epoch, VGG only ever got 95% through all training. To help with the overfitting issue, I played around with weight decay which slightly improved performane. (See full metrics 7.13)
+
+Metrics       | Accuracy          | Precision         | Recall            | F1 SCORE
+--------------|-------------------|-------------------|-------------------|-------------------
+Micro AVERAGE | 0.986214458753028 | 0.776979331888308 | 0.746139844447278 | 0.750848871605253
+Macro average | 0.987614634146342 | 0.680868292682927 | 0.700036585365854 | 0.674678048780488
+Macro-STDEV   | 0.006696400562078 | 0.211252057314272 | 0.187112902756728 | 0.178823261227664
 
 
-real world deployment --> has lots of unknown classes, has to no when to pick 'none of the above'
-used the 'padded' examples in the test set, 20%
-taking the best performing vgg and resnet models, selected a confidence threshold for the softmax
-and id probs below confidence threshold, classify as none of the above
-see results, change in accuracy, per class, recall, precision
-accuracy dropped to 57%. while ubicoustics had a drop, it wasn't this big, playing with threshold 
-didn't help much
+![VGG Train Loss](images/7.3 train loss.png) 
+![ResNet Train Loss ](images/7.13 train loss .png) 
+
+Did VGG or ResNet perform better? It's hard to say, both achieved similar accuracies on the train set. I believe if we had a balanced dataset for training and testing, we might be able to make better judgements about each model's performance.
+
+The original paper has a section on real world deployment -- the sounds in the real world are not constrained to these 41 classes. There are a lot unknown sounds, even for humans. Any device that is useful in the real world context has to be able to say when the sound does not belong to any of the given classes. To test this real world functionality, I padded the test set with 20% of unknown sounds i.e. sound sthat do not belong to the given categories. I evaluated both the best performing vgg and resnet models on this dataset. 
+
+A threshold was selected for the softmax output of the model, classifications that fell below this 'confidence threshold' were categorized as 'None'. The resulting accuracy for both models was significantly lower -- approximately 57%. In the ubicoustics paper they had a drop in accuracy but it wasn't this large. Modifying values of the confidence threshold did not help improve accuracy much.
 
 looked into calibration. turns out softmax prediction accuracies aren't always exact. models are overconfident
 this gap in calibrartion is problem with deep learning. a solution is temperature scaling, where output is smoothed?
-temp is a hyperparameter that can be learned. played around with different values from 0.3 - 1, did not help much
+temp is a hyperparameter that can be learned. played around with different values from 0.3 - 1, again did not help much
 
 # PART 2: polyphonic sound event detection #
 as mentioned earlier, realworld does not contain sounds in isolation. and thus there is another section of sound event detection called 'polyphonic'. wanted to evaluate this method on such dataset.
