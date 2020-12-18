@@ -23,6 +23,10 @@
 
 [Code details](#code-details)
 
+
+[![Watch the video](https://img.youtube.com/vi/<2TCgwNLPK6A>/hqdefault.jpg)](https://youtu.be/2TCgwNLPK6A)
+
+
 ## Introduction ##
 
 Sound event detection(SED) is the task of identifying sounds from a given audio stream along with their temporal start and end times. However, sounds do not occur in isolation, which makes it difficult to get isolated samples that generalize well for training. Additionally manually annotating a given audio stream is a time consuming task and often error prone, resulting in very few datasets of isolated samples or strongly annotated samples. In this project, we first work on classifying isolated sounds into 1 of 41 labels and then polyphonic sounds into n of 16 labels i.e. polyphonic SED.
