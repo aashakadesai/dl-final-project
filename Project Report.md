@@ -188,7 +188,6 @@ Macro-STDEV   | 0.006696400562078 | 0.211252057314272 | 0.187112902756728 | 0.17
 
 
 ![alt text](images/VGG_trainloss.png)
-<img src="images/VGG_trainloss.png" alt="" width="1000" height="800"/> 
 ![alt text](images/ResNet_trainloss.png) 
 
 Did VGG or ResNet perform better? It's hard to say, both achieved similar accuracies on the train set. I believe if we had a balanced dataset for training and testing, we might be able to make better judgements about each model's performance.
@@ -228,12 +227,10 @@ Example based recall | 0.717024448696244
 Average loss | 0.22571873990143987
 Hamming loss | 0.07021574440052701
 
-<img src="images/poly_test_hamming.png" alt="" width="1000" height="800"/> <img src="images/poly_test_recall.png" alt="" width="1000" height="800"/> 
-<img src="images/poly_test_loss.png" alt="" width="1000" height="800"/> 
-<img src="images/poly_test_prec.png" alt="" width="1000" height="800"/> <img src="images/poly_train_hamming.png" alt="" width="1000" height="800"/> 
-<img src="images/poly_train_recall.png" alt="" width="1000" height="800"/> 
-<img src="images/poly_train_loss.png" alt="" width="1000" height="800"/> 
-<img src="images/poly_train_prec.png" alt="" width="1000" height="800"/> 
+<img src="images/poly_test_hamming.png" alt="" width="500"/> <img src="images/poly_test_recall.png" alt="" width="500"/> 
+<img src="images/poly_test_loss.png" alt="" width="500"/> <img src="images/poly_test_prec.png" alt="" width="500"/> 
+<img src="images/poly_train_hamming.png" alt="" width="500"/> <img src="images/poly_train_recall.png" alt="" width="500"/> 
+<img src="images/poly_train_loss.png" alt="" width="500"/> <img src="images/poly_train_prec.png" alt="" width="500"/> 
 
 # future work section: #
 curate sound effects dataset for all sounds important to DHH community
