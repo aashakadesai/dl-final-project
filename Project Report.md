@@ -24,7 +24,7 @@
 [Code details](#code-details)
 
 
-[![Watch the video](https://img.youtube.com/vi/<2TCgwNLPK6A>/hqdefault.jpg)](https://youtu.be/2TCgwNLPK6A)
+[![Watch the video](images/thumbnail.png)](https://youtu.be/2TCgwNLPK6A)
 
 
 ## Introduction ##
