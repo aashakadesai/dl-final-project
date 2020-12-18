@@ -192,10 +192,10 @@ Did VGG or ResNet perform better? It's hard to say, both achieved similar accura
 
 The original paper has a section on real world deployment -- the sounds in the real world are not constrained to these 41 classes. There are a lot unknown sounds, even for humans. Any device that is useful in the real world context has to be able to say when the sound does not belong to any of the given classes. To test this real world functionality, I padded the test set with 20% of unknown sounds i.e. sound sthat do not belong to the given categories. I evaluated both the best performing vgg and resnet models on this dataset. 
 
-A threshold was selected for the softmax output of the model, classifications that fell below this 'confidence threshold' were categorized as 'None'. The resulting accuracy for both models was significantly lower -- approximately 57%. In the ubicoustics paper they had a drop in accuracy but it wasn't this large. Modifying values of the confidence threshold did not help improve accuracy much.
+A threshold was selected for the softmax output of the model, classifications that fell below this 'confidence threshold' were categorized as 'None'. The resulting accuracy for both models was significantly lower -- approximately 60%. In the ubicoustics paper they had a drop in accuracy but it wasn't this large. Modifying values of the confidence threshold did not help improve accuracy much.
 
 It turns out for most deep learning models, there is a gap between the output from the softmax layer and the true probabilies/cofidence for each label. Models tend to be overconfident with their prediction. Resolving this gap between predicted probabilities and true confidence values is called calibration. 
-One way to correctly calibrate a model is temperature scaling. Temp is a hyperparameter that can be learned but I chose to manually try different values. Again did not help much. 
+One way to correctly calibrate a model is temperature scaling. Temp is a hyperparameter that can be learned but I chose to manually try different values. Again did not help much. (See ipynb for output)
 
 # Polyphonic sound event detection #
 As mentioned earlier, real world does not contain sounds in isolation. Many different sounds occur simultaneously, resulting in this task called polyphonic sound event detection. The original paper did not try this method on polyphonic SED, so I wanted to explore how it performed with a multilabel classification problem instead.
