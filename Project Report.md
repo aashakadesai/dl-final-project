@@ -46,20 +46,22 @@ Algorithm for preprocessing:
 Each input feature is actually a numpy array. Notice it is single channel (no color). Sets of 500 are stacked together for ease of access and stored in .npy files and uploaded to google drive.
 
 ## Architectures tested: ##
-Most pretrainined nets expect 224x224, so in regards to smaller input, we remove last block of convolution. The benefit of transfer learning is being able to use networks pretrained on imagenet.
-Vgg11 with 4 blocks instead of 5 (from ubicoustics) insert table
-resnet18 (with last block removed, as suggested in ubicoustics) insert image
+In the Ubicoustics paper, they use a variant of the VGG model, specifically configuration A with 11 weight layers. The expected input size for VGG is 224x224, but we have 96x64 input features. With respect to the smaller input size, the last group of convolutional and maxpool layers were dropped. The fully connected layers were modified as well to account for the change in input size. 
+
+The second architecture we tested was ResNet18. Similar modifications were made with respect to the smaller input size (removal of last group of convolutional/maxpool layers, modified fully connected layers).
+
+For training, all layers in vgg.features are initially frozen, and only the classifier is trained for 10 epochs. Then the learning rate is reduced and all parameters are unfrozen to tune the entire model. 
 
 ## Data ##
-As mentioned earlier, data was sourced from freesound challenge. The training set consisted of a mix of manually verified and unverified examples. The test set also contained sounds that did not belong to any of the given classes. The challeneg included a csv file listing which files had been manually verified or which files did not belong to any of the given classes. This was used to create 4 dataset combinations were created
+As mentioned earlier, data was sourced from freesound challenge. The training set consisted of a mix of manually verified and unverified examples. The test set also contained sounds that did not belong to any of the given classes. The challenge included a csv file listing which files had been manually verified or which files did not belong to any of the given classes. This was used to create 4 dataset combinations:
 
-dataset breakdown: 
-1) freesound train with only manually verified & freesound test without padded examples
-2) freesound amplified with amplified examples per class & freesound test without padded examples
-3) freesound with all examples in training & freesound test without padded examples
-4) freesound with all examples in training & freesound test with 20% unknown examples
+1) Verified: freesound train set with only manually verified samples 
+2) Complete: freesound with all available samples in training set
+2) Amplified: all samples in complete, plus additional augmented amplified samples for some classes
+3) Test unpadded: freesound test set with only samples belonging to the 41 classes
+4) Test padded: freesound test set padded with 20% unknown samples
 
-Additionally, given dataset was highly imbalanced: 
+The given dataset is highly imbalanced, see graph and table below: 
 ![alt text](images/Data_breakdown.png)
 
 Class Name			 |	Complete | Amplified | Verified | Test unpadded | Test Padded
@@ -107,34 +109,75 @@ Trumpet | 1623 | 1623 | 529 | 225 | 225
 Violin_or_fiddle | 1508 | 1508 | 1070 | 469 | 469
 Writing | 2882 | 2882 | 458 | 237 | 237
 
-## Metrics used: ##
+## Metrics used for Evaluation ##
 
-Precision = TP/(TP + FP)
+Due to the imbalanced nature of this dataset, accuracy was not the best metric to evaluate performance. 
+Accuracy = (TP + TN)/(TP + FP + TN + FN)
+Because of the large number of true negatives for each class, the class accuracy does not tell us much.
 
-Recall = TP/(TP + FN)
+So we use precision, recall and F1-score.
 
-Accuracy = (TP + TN)/(TP + FP + TN + FN) --> BUMPED UP BECAUSE OF IMBALANCED CLASSES, large true negatives. Detailed metrics values for each class (accuracy, preision, recall, f1 scores and number of samples) for each run described below can be found in full metrics.csv. 
+Precision = TP/(TP + FP)  [What proportion of positive identifications are actually correct?]
+
+Recall = TP/(TP + FN)  [What proportions of actual positives was identified correctly?]
+
+F1-SCORE [Harmonic mean of precision and recall]
+
+Detailed metrics values for each class (accuracy, precision, recall, f1 scores and number of samples) for each run can be found in full metrics.csv. We also list macro-averages of these metrics and micro-averages to estimate full model performance. 
 
 ## Results: ##
-initial run with (1) using vgg showed 71% accuracy, but further look at precision and recall showed that some classes were not being learned at all. Precision ranged from 0.2 to 0.9, same for recall. (see full metrics 7.6 test)
+The first run using VGG architecture and the Verified dataset achieved 97% accuracy on the train set and 73% accuracy on the test set. But a deeper look at precision and recall values for each class showed that some classes were not being learned at all. Precision and recall values ranged from 0.2 to 0.9. (see full metrics 7.6 test)
 
-insert table of per class accuracy
-(1) is very small dataset as well. 
+Metric         | Accuracy  | Precision   | Recall      | F1 SCORE
+---------------|-----------|-------------|-------------|-----------------
+Micro AVERAGE | 0.98476421 | 0.746515058 | 0.734023333 | 0.732463955
+Macro average | 0.98702683 | 0.685114634 | 0.653639024 | 0.65215122
+Macro-STDEV   | 0.00741917 | 0.186364477 | 0.211593309 | 0.184094188
 
-run with all examples in training had much better distribution of per class accuracy
+The verified dataset contains a total of 18544 samples, ranging from 60 to 1600 samples per class. While training on only the verified sampled has the benefit of strong annotation, the reduced training set size hampered learning significantly. 
+ 
+The next run was using the same VGG architecure and the Complete dataset. This had much better distribution of per class values, with macro-avg recall going up to 0.71. 
+
+
+Metric         | Accuracy  | Precision   | Recall      | F1 SCORE
+---------------|-----------|-------------|-------------|-----------------
+Micro AVERAGE  | 0.98621784|0.778676259	 | 0.752659556 | 0.755461749
+Macro average  | 0.98794146|0.692556098	 | 0.712363415 | 0.690390244
+Macro-STDEV	   | 0.00653808|0.187757712	 | 0.179334153 | 0.164522486
+
+
 insert graphs of train acc, train loss, test loss, test accuracy
 table of per class accuracy
 
-initially froze everything but classifier layers and then unfroze to tune with lower learning rate
-on audioset data, ubicoustics achieved 70% accuracy. but like 90 something with sound effect libraries. a significant
-limitation of this proejct is not using sound effect data, and size of data (16 hours vs 53 hours)
-close enough, better than chnace performance
+When trained with audioset data, the ubicoustics model achieved 70.5% accuracy and 93.8% when trained with sound effect libraries. A significant limitation of this proejct is not using sound effect data and the size of data (we have 16 hours in our training set, vs 54.6 hours used by ubicoustics). As such, I will interpret precision and recall of approx 0.7 as close to replication and definitely better than chance performance.
 
+One of strategies to deal with imbalanced classes is data augmentation. It also assists with overfitting. In the ubicoustics paper, modifying amplitude and mixing original files with background sounds had a significant positive effect on model performance. Since standard image transforms can't be applied to spectograms, data augmentation consists of modifying the amplitude of the raw audio file and regenerating spectograms. I chose classes that had < 1000 samples in Completed dataset to generate additional samples by generating an audio file that is 30% louder and 30% softer for these classes. The hope was that in addition to adding diversity to the data, we will have slightly more balanced dataset as well. 
 
-one of strategies to deal with imbalanced classes: data augmentation. also assists with overfitting (boosted ubicoustics model significantly) -- amplitude change. standard image transforms can't be used on spectograms, so data augmentation consisits of modiying the amplitude of the raw audio file and regeneratign spectograms. chose classes that had < 1000 samples in (3). generated audio file that is 30% louder and 30% softer for these classes and regenerated spectograms. 
-run with amplified examples did not show much improvement in per class accuracy, figured oversampling based on same concept would have same results. actually noticed decrease in precision/recall of amplified classes. a theory for this is that in mel spectograms, typically amplitude is the color scale. vgg-ish audio input features are 96x64, no channels for color. however ubicoustics used same code. so not sure where we went wrong?
+However, the run with VGG and Amplified dataset did not show much improvement in per class accuracy for chosen classes. (See full metrics 7.17 and 7.18 and table below). While there was a slight decrease in precision, there is also a slight increase in recall.
 
+Amplified Classes | Added Samples | Comp precision | Comp recall | Amp precision | amp recall | precision change | recall change
+------------------|---------------|----------------|-------------|---------------|------------|------------------|---------------
+Bass_drum 		  | 1311 | 0.5333 | 0.2759 | 0.551 | 0.4655 | 0.0177 | 0.1896
+Burping_or_eructation | 1233 | 0.6809 | 0.8205 | 0.4857 | 0.8718 | -0.1952 | 0.0513
+Cowbell | 1185 | 0.831 | 0.6941 | 0.775 | 0.7294 | -0.0559999999999999 | 0.0353
+Double_bass | 1789 | 0.7778 | 0.8922 | 0.7769 | 0.9216 | -0.000900000000000012 | 0.0294
+Finger_snapping | 625 | 0.814 | 0.5469 | 0.72 | 0.5625 | -0.094 | 0.0155999999999999
+Glockenspiel | 972 | 0.3709 | 0.4375 | 0.413 | 0.5938 | 0.0421 | 0.1563
+Gunshot_or_gunfire | 1230 | 0.8106 | 0.4842 | 0.7466 | 0.4932 | -0.0639999999999999 | 0.00900000000000001
+Oboe | 1617 | 0.792 | 0.8839 | 0.6601 | 0.9018 | -0.1319 | 0.0179
+Scissors | 1870 | 0.6293 | 0.5328 | 0.5461 | 0.6058 | -0.0831999999999999 | 0.073
+Snare_drum | 1927 | 0.5152 | 0.85 | 0.3529 | 0.9 | -0.1623 | 0.05
+Tambourine | 1032 | 0.7818 | 0.6615 | 0.7963 | 0.6615 | 0.0145 | 0
+Telephone | 1905 | 0.8545 | 0.5054 | 0.797 | 0.5627 | -0.0575 | 0.0573
 
+Metrics       | Accuracy          | Precision         | Recall            | F1 SCORE
+--------------|-------------------|-------------------|-------------------|-------------------
+Micro AVERAGE | 0.985896021930384 | 0.775922261889583 | 0.749334323600663 | 0.752631493051128
+Macro average | 0.987768292682927 | 0.679790243902439 | 0.721553658536585 | 0.686587804878049
+Macro-STDEV   | 0.005961394091334 | 0.185862725963113 | 0.166770694514295 | 0.15348852594758
+
+ a theory for this is that in mel spectograms, typically amplitude is the color scale. vgg-ish audio input features are 96x64, no channels for color. however ubicoustics used same code. so not sure where we went wrong?
+ 
 then moved onto resnet architecture, with (3)
 learned much faster, overfit on train set
 insert training loss, test loss, train accuracy graph
