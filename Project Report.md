@@ -187,7 +187,8 @@ Macro average | 0.987614634146342 | 0.680868292682927 | 0.700036585365854 | 0.67
 Macro-STDEV   | 0.006696400562078 | 0.211252057314272 | 0.187112902756728 | 0.178823261227664
 
 
-![alt text](images/VGG_trainloss.png =100x60) 
+![alt text](images/VGG_trainloss.png)
+<img src="images/VGG_trainloss.png" alt="" width="100" height="60"/> 
 ![alt text](images/ResNet_trainloss.png) 
 
 Did VGG or ResNet perform better? It's hard to say, both achieved similar accuracies on the train set. I believe if we had a balanced dataset for training and testing, we might be able to make better judgements about each model's performance.
