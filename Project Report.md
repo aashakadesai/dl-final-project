@@ -24,6 +24,8 @@
 [Code details](#code-details)
 
 
+## Project Video
+
 [![Watch the video](images/thumbnail.png)](https://youtu.be/2TCgwNLPK6A)
 
 
