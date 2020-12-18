@@ -4,64 +4,42 @@
 
 Sound event detection is the task of identifying sounds from a given audio stream along with their temporal start and end times. However, sounds do not occur in isolation which makes it difficult to get isolated samples that generalize well for training. Additionally manually annotating a given audio stream is a time consuming task and often error prone -- resulting in very few datasets of isolated samples or strongly annotated samples. In this project, we work first work on classifying sounds into 1 of 41 labels and then on n of 16 labels i.e. polyphonic sound event detection.
 
+![alt text](images/aud_tagging.png)
+
 Some other approaches to SED include gaussian mixture models, support vector machines and hierchical models. Hidden markov models are used to detect sounds in the audio stream as well. The deep learning approaches to SED also vary significantly from Recurrent Neural Networks (RNNs) on raw audio stream to Convolutional Neural Networks on spectograms. For this project, I'm following the approach described in the paper Ubicoustics: Plug and Play system.
 
 I chose this task as someone who has difficulty hearing -- a sound event detection technology would take a lot of anxiety out of everyday life. We live in a noisy world, sounds a lot of information we do not think twice about -- alarms, knocking, sirens, honking, microwave beeps, tea kettle whistles and the list goes on. Many of these ahve no visual cues to go with them and thus difficult to notice and identify. Additionally, devices do exist for specific cases (vibrating alarm clocks, flashing doorbell) but it is impractical to have a device for every sound. We are not always in control of our environment so a single technology that can handle many diverse sounds would have much value. This project was also inspired by Sound Watch which in turn used the approach described in Ubicoustics.   
 
 ## Data samples ##
 To deal with difficulty in recording isolated samples and weakly labelled data, Laput et al curated a training set
-on selected sounds from sound effect libraries. The advantages of sound effect libraries are that all available sound effects are atomic i.e. tightly segmented and hundreds of variations of each sound exist, creating a diverse set. Unfortunately, due to licensing agreements existing with the sound effect libraries and the institution (CMU), I wasn't able to get access to this curated dataset. The timeline of this project made it impractical to curate my own dataset from sound effect libraries. Instead, I used the FSDKaggle2018 dataset, consisting of samples from Freesound from DCASE 2018 (link). The challenge for this dataset was "general purpose audio tagging" so each .wav file (3-30 sec in length) in the dataset has been annotated with a single label. The 41 labels are from google's AudioSet Ontology, listed below:
+on selected sounds from sound effect libraries. The advantages of sound effect libraries are that all available sound effects are atomic i.e. tightly segmented and hundreds of variations of each sound exist, creating a diverse set. Unfortunately, due to licensing agreements existing with the sound effect libraries and the institution (CMU), I wasn't able to get access to this curated dataset. The timeline of this project made it impractical to curate my own dataset from sound effect libraries. Instead, I used the FSDKaggle2018 dataset, consisting of samples from Freesound from [Named link](http://dcase.community/challenge2018/task-general-purpose-audio-tagging "DCASE 2018"). The challenge for this dataset was "general purpose audio tagging" so each .wav file (3-30 sec in length) in the dataset has been annotated with a single label. The 41 labels are from google's AudioSet Ontology, listed below:
 
-Tearing
-Bus
-Shatter
-Gunshot, gunfire
-Fireworks
-Writing
-Computer keyboard
-Scissors
-Microwave oven
-Keys jangling
-Drawer open or close
-Squeak
-Knock
-Telephone
-Saxophone
-Oboe
-Flute
-Clarinet
-Acoustic guitar
-Tambourine
-Glockenspiel
-Gong
-Snare drum
-Bass drum
-Hi-hat
-Electric piano
-Harmonica
-Trumpet
-Violin, fiddle
-Double bass
-Cello
-Chime
-Cough
-Laughter
-Applause
-Finger snapping
-Fart
-Burping, eructation
-Cowbell
-Bark
-Meow 
+Classes |
+--------|-----|--------|-----
+Tearing | Bus | Shatter | 
+Gunshot, gunfire | Fireworks| Writing 
+Computer keyboard | Scissors | Microwave oven
+Keys jangling | Drawer open or close | Squeak | 
+Knock| Telephone | Saxophone| 
+Oboe | Flute | Clarinet | 
+Acoustic guitar | Tambourine | Glockenspiel
+Gong| Snare drum | Bass drum
+Hi-hat | Electric piano| Harmonica 
+Trumpet | Violin, fiddle | Double bass  
+Cello | Chime | Cough
+Laughter | Applause | Finger snapping
+Fart | Burping, eructation | Cowbell
+Bark | Meow 
 
 ## Converting Audio to Images ##
-Often times we see plots of sounds, with time as the x axis and pressure as the y axis. Other representations of sound exist, like the fourier transform that takes a signal in the time domain as input and outputs its decomposition into frequencies. Human's ability to hear is focused on small range of frequencies and amplitudes. Converting the frequency to log scale and amplitude to decibels, gives us a spectogram. However, humans ability to hear is not linear --  pairs of sounds that are equidistant to each other on the Hz scale (500 and 1000 Hz vs 7500 and 8000 Hz) do not sound equidistant to humans. So there exists a Mel Scale that is a non-linear transform of the frequency scale. Using this, we create mel spectograms, pictured below. The code for generation of mel spectograms is available through google's audioset VGGish, and has been adapted from there.
+Often times we see plots of sounds, with time as the x axis and pressure as the y axis. Other representations of sound exist, like the fourier transform that takes a signal in the time domain as input and outputs its decomposition into frequencies. Human's ability to hear is focused on small range of frequencies and amplitudes. Converting the frequency to log scale and amplitude to decibels, gives us a spectogram. However, humans ability to hear is not linear --  pairs of sounds that are equidistant to each other on the Hz scale (500 and 1000 Hz vs 7500 and 8000 Hz) do not sound equidistant to humans. So there exists a Mel Scale that is a non-linear transform of the frequency scale. Using this, we create mel spectograms, pictured below. The code for generation of mel spectograms is available through google's audioset [Named link](https://github.com/tensorflow/models/tree/master/research/audioset/vggish "VGGish"), and has been adapted from there.
 
 ![alt text](images/mel_spectogram.png) 
 
-Algorithm for preprocessing --> 
-Ensure all wav files are uniform i.e. monochannel, 16-bit depth, same sample rate (16 Hz in Ubicoustics, but 44.1 Hz here). pydub library has several functions that helped with this.
-Then audio is segmented into 960 ms blocks. On each block, Short Time Fourier Transform is computed with 25ms window, 10 ms hop. Mel Fourier Coefficients are calculated by placing into 64 mel bins, and log scaled mel spectogram of 96x64 is generated for each 960 ms of audio. Visualization of the generated spectograms are shown below:
+Algorithm for preprocessing:
+- Ensure all wav files are uniform i.e. monochannel, 16-bit depth, same sample rate (16 Hz in Ubicoustics, but 44.1 Hz here). pydub library has several functions that helped with this.
+- Then audio is segmented into 960 ms blocks. On each block, Short Time Fourier Transform is computed with 25ms window, 10 ms hop. 
+- Mel Fourier Coefficients are calculated by placing into 64 mel bins, and log scaled mel spectogram of 96x64 is generated for each 960 ms of audio. Visualization of the generated spectograms are shown below:
 
 ![alt text](images/melspec0.png) ![alt text](images/melspec2.png) ![alt text](images/melspec4.png) ![alt text](images/melspec6.png) 
 
@@ -84,12 +62,15 @@ dataset breakdown:
 Additionally, given dataset was highly imbalanced: see graphs below
 also add table breakdown
 
-##Metrics used:##
+## Metrics used: ##
+
 Precision = TP/(TP + FP)
+
 Recall = TP/(TP + FN)
+
 Accuracy = (TP + TN)/(TP + FP + TN + FN) --> BUMPED UP BECAUSE OF IMBALANCED CLASSES, large true negatives. Detailed metrics values for each class (accuracy, preision, recall, f1 scores and number of samples) for each run described below can be found in full metrics.csv. 
 
-##Results: ##
+## Results: ##
 initial run with (1) using vgg showed 71% accuracy, but further look at precision and recall showed that some classes were not being learned at all. Precision ranged from 0.2 to 0.9, same for recall. (see full metrics 7.6 test)
 
 insert table of per class accuracy
@@ -130,7 +111,7 @@ looked into calibration. turns out softmax prediction accuracies aren't always e
 this gap in calibrartion is problem with deep learning. a solution is temperature scaling, where output is smoothed?
 temp is a hyperparameter that can be learned. played around with different values from 0.3 - 1, did not help much
 
-#PART 2: polyphonic sound event detection#
+# PART 2: polyphonic sound event detection #
 as mentioned earlier, realworld does not contain sounds in isolation. and thus there is another section of sound event detection called 'polyphonic'. wanted to evaluate this method on such dataset.
 
 dataset --> TUT-SED also DCASE. Contains 16 classes that are mixed together synthetically resulting in accurate annotations. need password to get dataset.
@@ -149,7 +130,7 @@ example based preciison and recall
 😥include precision recall curve for all the thresholds, train loss graph, test loss graph
 hamming loss?
 
-#future work section:#
+# future work section: #
 curate sound effects dataset for all sounds important to DHH community
 mixing augmentations
 test even more architectures, lightweight (See diff architectures paper & DJ's paper)
