@@ -1,14 +1,14 @@
-# Project Report #
+# Sound Event Detection using CNNs - Project Report #
 
 ## Introduction ##
 
-Sound event detection is the task of identifying sounds from a given audio stream along with their temporal start and end times. However, sounds do not occur in isolation which makes it difficult to get isolated samples that generalize well for training. Additionally manually annotating a given audio stream is a time consuming task and often error prone -- resulting in very few datasets of isolated samples or strongly annotated samples. In this project, we work first work on classifying sounds into 1 of 41 labels and then on n of 16 labels i.e. polyphonic sound event detection.
+Sound event detection is the task of identifying sounds from a given audio stream along with their temporal start and end times. However, sounds do not occur in isolation which makes it difficult to get isolated samples that generalize well for training. Additionally manually annotating a given audio stream is a time consuming task and often error prone -- resulting in very few datasets of isolated samples or strongly annotated samples. In this project, we first work on classifying sounds into 1 of 41 labels and then on n of 16 labels i.e. polyphonic sound event detection.
 
-![alt text](images/aud_tagging.png)
+                                    ![alt text](images/aud_tagging.png)
 
-Some other approaches to SED include gaussian mixture models, support vector machines and hierchical models. Hidden markov models are used to detect sounds in the audio stream as well. The deep learning approaches to SED also vary significantly from Recurrent Neural Networks (RNNs) on raw audio stream to Convolutional Neural Networks on spectograms. For this project, I'm following the approach described in the paper Ubicoustics: Plug and Play system.
+Some other approaches to SED include gaussian mixture models, support vector machines and hierchical models. Hidden markov models are used to detect sounds in the audio stream as well. The deep learning approaches to SED also vary significantly from Recurrent Neural Networks (RNNs) on raw audio stream to Convolutional Neural Networks on spectograms. For this project, I'm following the approach described in the paper Ubicoustics: Plug and Play system paper.
 
-I chose this task as someone who has difficulty hearing -- a sound event detection technology would take a lot of anxiety out of everyday life. We live in a noisy world, sounds a lot of information we do not think twice about -- alarms, knocking, sirens, honking, microwave beeps, tea kettle whistles and the list goes on. Many of these ahve no visual cues to go with them and thus difficult to notice and identify. Additionally, devices do exist for specific cases (vibrating alarm clocks, flashing doorbell) but it is impractical to have a device for every sound. We are not always in control of our environment so a single technology that can handle many diverse sounds would have much value. This project was also inspired by Sound Watch which in turn used the approach described in Ubicoustics.   
+I chose this task as someone who has difficulty hearing -- a sound event detection technology would take a lot of anxiety out of everyday life. We live in a noisy world, sounds convey a lot of information we do not think twice about -- alarms, knocking, sirens, honking, microwave beeps, tea kettle whistles and the list goes on. Many of these have no visual cues to go with them and thus difficult to notice and identify. Additionally, devices do exist for specific cases (vibrating alarm clocks, flashing doorbell) but it is impractical to have a device for every sound. We are not always in control of our environment so a single technology that can handle many diverse sounds would have much value. This project was also inspired by Sound Watch paper which in turn used the approach described in Ubicoustics.   
 
 ## Data samples ##
 To deal with difficulty in recording isolated samples and weakly labelled data, Laput et al curated a training set
@@ -111,7 +111,8 @@ Writing | 2882 | 2882 | 458 | 237 | 237
 
 ## Metrics used for Evaluation ##
 
-Due to the imbalanced nature of this dataset, accuracy was not the best metric to evaluate performance. 
+Due to the imbalanced nature of this dataset, accuracy was not the best metric to evaluate performance.
+ 
 Accuracy = (TP + TN)/(TP + FP + TN + FN)
 Because of the large number of true negatives for each class, the class accuracy does not tell us much.
 
@@ -146,9 +147,6 @@ Macro average  | 0.98794146|0.692556098	 | 0.712363415 | 0.690390244
 Macro-STDEV	   | 0.00653808|0.187757712	 | 0.179334153 | 0.164522486
 
 
-insert graphs of train acc, train loss, test loss, test accuracy
-table of per class accuracy
-
 When trained with audioset data, the ubicoustics model achieved 70.5% accuracy and 93.8% when trained with sound effect libraries. A significant limitation of this proejct is not using sound effect data and the size of data (we have 16 hours in our training set, vs 54.6 hours used by ubicoustics). As such, I will interpret precision and recall of approx 0.7 as close to replication and definitely better than chance performance.
 
 One of strategies to deal with imbalanced classes is data augmentation. It also assists with overfitting. In the ubicoustics paper, modifying amplitude and mixing original files with background sounds had a significant positive effect on model performance. Since standard image transforms can't be applied to spectograms, data augmentation consists of modifying the amplitude of the raw audio file and regenerating spectograms. I chose classes that had < 1000 samples in Completed dataset to generate additional samples by generating an audio file that is 30% louder and 30% softer for these classes. The hope was that in addition to adding diversity to the data, we will have slightly more balanced dataset as well. 
@@ -159,13 +157,13 @@ Amplified Classes | Added Samples | Comp precision | Comp recall | Amp precision
 ------------------|---------------|----------------|-------------|---------------|------------|------------------|---------------
 Bass_drum 		  | 1311 | 0.5333 | 0.2759 | 0.551 | 0.4655 | 0.0177 | 0.1896
 Burping_or_eructation | 1233 | 0.6809 | 0.8205 | 0.4857 | 0.8718 | -0.1952 | 0.0513
-Cowbell | 1185 | 0.831 | 0.6941 | 0.775 | 0.7294 | -0.0559999999999999 | 0.0353
-Double_bass | 1789 | 0.7778 | 0.8922 | 0.7769 | 0.9216 | -0.000900000000000012 | 0.0294
-Finger_snapping | 625 | 0.814 | 0.5469 | 0.72 | 0.5625 | -0.094 | 0.0155999999999999
+Cowbell | 1185 | 0.831 | 0.6941 | 0.775 | 0.7294 | -0.055999 | 0.0353
+Double_bass | 1789 | 0.7778 | 0.8922 | 0.7769 | 0.9216 | -0.00090 | 0.0294
+Finger_snapping | 625 | 0.814 | 0.5469 | 0.72 | 0.5625 | -0.094 | 0.015599
 Glockenspiel | 972 | 0.3709 | 0.4375 | 0.413 | 0.5938 | 0.0421 | 0.1563
-Gunshot_or_gunfire | 1230 | 0.8106 | 0.4842 | 0.7466 | 0.4932 | -0.0639999999999999 | 0.00900000000000001
+Gunshot_or_gunfire | 1230 | 0.8106 | 0.4842 | 0.7466 | 0.4932 | -0.063999| 0.00900
 Oboe | 1617 | 0.792 | 0.8839 | 0.6601 | 0.9018 | -0.1319 | 0.0179
-Scissors | 1870 | 0.6293 | 0.5328 | 0.5461 | 0.6058 | -0.0831999999999999 | 0.073
+Scissors | 1870 | 0.6293 | 0.5328 | 0.5461 | 0.6058 | -0.083199 | 0.073
 Snare_drum | 1927 | 0.5152 | 0.85 | 0.3529 | 0.9 | -0.1623 | 0.05
 Tambourine | 1032 | 0.7818 | 0.6615 | 0.7963 | 0.6615 | 0.0145 | 0
 Telephone | 1905 | 0.8545 | 0.5054 | 0.797 | 0.5627 | -0.0575 | 0.0573
@@ -196,14 +194,13 @@ The original paper has a section on real world deployment -- the sounds in the r
 
 A threshold was selected for the softmax output of the model, classifications that fell below this 'confidence threshold' were categorized as 'None'. The resulting accuracy for both models was significantly lower -- approximately 57%. In the ubicoustics paper they had a drop in accuracy but it wasn't this large. Modifying values of the confidence threshold did not help improve accuracy much.
 
-looked into calibration. turns out softmax prediction accuracies aren't always exact. models are overconfident
-this gap in calibrartion is problem with deep learning. a solution is temperature scaling, where output is smoothed?
-temp is a hyperparameter that can be learned. played around with different values from 0.3 - 1, again did not help much
+It turns out for most deep learning models, there is a gap between the output from the softmax layer and the true probabilies/cofidence for each label. Models tend to be overconfident with their prediction. Resolving this gap between predicted probabilities and true confidence values is called calibration. 
+One way to correctly calibrate a model is temperature scaling. Temp is a hyperparameter that can be learned but I chose to manually try different values. Again did not help much. 
 
-# PART 2: polyphonic sound event detection #
+# Polyphonic sound event detection #
 As mentioned earlier, real world does not contain sounds in isolation. Many different sounds occur simultaneously, resulting in this task called polyphonic sound event detection. The original paper did not try this method on polyphonic SED, so I wanted to explore how it performed with a multilabel classification problem instead.
 
-The dataset used for this part is from TUT-SED. It contains sounds from 16 classes that are mixed together synthetically to create polyphony. The result of a synthetic mixture is very accurate annotations. need password to get dataset.
+The dataset used for this part is from [TUT-SED](https://webpages.tuni.fi/arg/paper/taslp2017-crnn-sed/tut-sed-synthetic-2016 "TUT-SED"). It contains sounds from 16 classes that are mixed together synthetically to create polyphony. The result of a synthetic mixture is very accurate annotations. need password to get dataset.
 
 The same preprocessing was applied to the audio files to generate mel spectograms, but now it is multilabel classification problem so each sample has multiple labels.
 
@@ -212,6 +209,8 @@ The labels were multihot encoded and sigmoid was used as final layer. Instead of
 
 Evaluation Metrics: 
 For multilable classification, accuracy doesn't make much sense because each prediction can be partially correct. Using a threshold on the sigmoid output from the model to classify as positive. Then example based preciison and recall and hamming loss were calculated.
+
+Hamming Loss = number of incorrectly classified samples / (number of samples x number of labels)
 
 Metrics                 | Train set performance 
 ------------------------|-----------------------
@@ -227,21 +226,50 @@ Example based recall | 0.717024448696244
 Average loss | 0.22571873990143987
 Hamming loss | 0.07021574440052701
 
-<img src="images/poly_test_hamming.png" alt="" width="500"/> <img src="images/poly_test_recall.png" alt="" width="500"/> 
-<img src="images/poly_test_loss.png" alt="" width="500"/> <img src="images/poly_test_prec.png" alt="" width="500"/> 
-<img src="images/poly_train_hamming.png" alt="" width="500"/> <img src="images/poly_train_recall.png" alt="" width="500"/> 
-<img src="images/poly_train_loss.png" alt="" width="500"/> <img src="images/poly_train_prec.png" alt="" width="500"/> 
+Train set 												Test Set
 
-# future work section: #
-curate sound effects dataset for all sounds important to DHH community
-mixing augmentations
-test even more architectures, lightweight (See diff architectures paper & DJ's paper)
-inclusioin of RNN - capturing timeseries, R-CNN hybrid
-why spectograms are not good -- datascience article
-more work into anomaly detection -- unknown sounds
-further testing on polyphonic
+<img src="images/poly_train_loss.png" alt="" width="500"/> <img src="images/poly_test_loss.png" alt="" width="500"/>
+<img src="images/poly_train_hamming.png" alt="" width="500"/> <img src="images/poly_test_hamming.png" alt="" width="500"/> 
+<img src="images/poly_train_recall.png" alt="" width="500"/> <img src="images/poly_test_recall.png" alt="" width="500"/> 
+<img src="images/poly_train_prec.png" alt="" width="500"/> <img src="images/poly_test_prec.png" alt="" width="500"/>
 
-note on efficiency, google drive access
+# Future Work Section: #
+I believe there is a lot more things I would like to try. 
+1. Curate sound effects dataset for all sounds important to DHH community. Bragg et al's paper did a survey of sounds important to DHH community in various environments (work, home, travel). When looking for a dataset for this project, I never found a dataset that had all the sounds I would like to classify. Curating these sounds from the sound effect libraries would result in a very useful dataset.
+2. Other data augmentation methods like mixing in background sounds would be nice to try as well. Could help with the over fitting problem and class imbalance. 
+3. importance weighting 
+4. Many more pretrained networks exist, test this spectogram method on even more architectures that are perhaps more lightweight (See diff architectures paper & DJ's paper)
+5. Since time is important in audio data, recurrent neural networks could bring perks. R-CNN hybrid exist that might be a good balance.
+6. why spectograms are not good -- datascience article
+7. more work into anomaly detection -- unknown sounds
+8. further testing on polyphonic
 
+# References #
+Gierad Laput, Karan Ahuja, Mayank Goel, and Chris Harrison. 2018. Ubicoustics: Plug-and-Play Acoustic Activity Recognition. In The 31st Annual ACM Symposium on User Interface Software and Technology (UIST '18). ACM, New York, NY, USA, 213-224. DOI: https://doi.org/10.1145/3242587.3242609
+Dhruv Jain, Kelly Mack, Akli Amrous, Matt Wright, Steven Goodman, Leah Findlater, Jon E. Froehlich: HomeSound: An Iterative Field Deployment of an In-Home Sound Awareness System for Deaf or Hard of Hearing Users. CHI 2020: 1-12
+Danielle Bragg, Nicholas Huynh, Richard E. Ladner: A Personalizable Mobile Sound Detector App Design for Deaf and Hard-of-Hearing Users. ASSETS 2016: 3-13
+
+
+# Code details #
+
+FSD Kaggle 2018 Dataset can be downloaded here: https://www.kaggle.com/c/freesound-audio-tagging/data
+TUT-SED Polyphonic Dataset can be downloaded here: https://webpages.tuni.fi/arg/paper/taslp2017-crnn-sed/tut-sed-synthetic-2016 
+Note: you need to email owner to get username/password for access.
+
+All code to preprocess .wav files and generate mel spectograms can be found in folder preprocessing. Directory and file names have to be modified accordingly before use.
+
+The generated mel spec datasets can be found at the following links. Amplified, Verfied, Complete and Polyphonic contain test sets as well.
+
+Amplified: https://drive.google.com/file/d/1qaaHo06u6gxlwFXjp76o4aM9IuCt8o-3/view?usp=sharing
+Verified: https://drive.google.com/file/d/1mt90E8Mlsrsir71dm2nuPi16yNRxwAKK/view?usp=sharing
+Complete: https://drive.google.com/file/d/1gtwPp-geHIRJBI8m31zkGFF4vE7bQ4Ni/view?usp=sharing
+Test padded: https://drive.google.com/file/d/1reWj12wXaNHBhDhsQy9o3zlVvIk50fTP/view?usp=sharing
+Polyphonic: https://drive.google.com/file/d/1v6CveXuAsSPGssJXR4rm4-bpMl5PnRIG/view?usp=sharing
+
+The tar datasets have to be uploaded to your google drive to use the given Colab notebooks. Project.ipynb is for single sound event detetction and polyphonic.ipynb for polyphonic sound event detection. 
+
+All figures can be found under images. Full metrics from each run are in Full metrics.xlsx. The first sheet of the excel workbook lists the hyperparameters, models and dataset used for each run and corresponding serial number. 
+
+Contact aashakad@cs.washington.edu if you have any questions. Thanks!
 
 
