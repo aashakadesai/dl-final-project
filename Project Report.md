@@ -14,7 +14,7 @@ I chose this task as someone who has difficulty hearing -- a sound event detecti
 To deal with difficulty in recording isolated samples and weakly labelled data, Laput et al curated a training set
 on selected sounds from sound effect libraries. The advantages of sound effect libraries are that all available sound effects are atomic i.e. tightly segmented and hundreds of variations of each sound exist, creating a diverse set. Unfortunately, due to licensing agreements existing with the sound effect libraries and the institution (CMU), I wasn't able to get access to this curated dataset. The timeline of this project made it impractical to curate my own dataset from sound effect libraries. Instead, I used the FSDKaggle2018 dataset, consisting of samples from Freesound from [DCASE 2018](http://dcase.community/challenge2018/task-general-purpose-audio-tagging "DCASE 2018"). The challenge for this dataset was "general purpose audio tagging" so each .wav file (3-30 sec in length) in the dataset has been annotated with a single label. The 41 labels are from google's AudioSet Ontology, listed below:
 
-Classes            |	           |
+CLASSES            | CLASSES       | CLASSES
 -------------------|---------------|--------
 Tearing            | Bus           | Shatter 
 Gunshot, gunfire   | Fireworks     | Writing 
